@@ -13,6 +13,13 @@ function ProductList({ onHomeClick }) {
     const calculateTotalQuantity = () => {
         return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0;
     }
+    useEffect(() => {
+        const newAdded = {};
+        cartItems.forEach(item => {
+            newAdded[item.name] = true;
+        });
+        setAddedToCart(newAdded);
+    }, [cartItems]);
 
     const plantsArray = [
         {
@@ -264,8 +271,6 @@ function ProductList({ onHomeClick }) {
 
     const handleAddToCart = (plant) => {
         dispatch(addItem(plant));
-        setAddedToCart((prev) => ({ ...prev, [plant.name]: true }));
-        console.log(`Added ${plant.name} to cart`);
     }
     return (
         <div>
@@ -311,7 +316,7 @@ function ProductList({ onHomeClick }) {
                                         <h3 className="product-title">{plant.name}</h3>
                                         <p className="product-description">{plant.description}</p>
                                         <p className="product-cost">{plant.cost}</p>
-                                        <button className='product-button' onClick={() => handleAddToCart(plant)}>{addedToCart[plant.name] ? "Added" : "Add to Cart"}</button>
+                                        <button className={addedToCart[plant.name] ? 'product-button added-to-cart' : 'product-button'} onClick={() => handleAddToCart(plant)} disabled={!!addedToCart[plant.name]}>{addedToCart[plant.name] ? "Added" : "Add to Cart"}</button>
                                     </div>
                                 ))}
                             </div>
